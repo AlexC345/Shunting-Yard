@@ -3,10 +3,11 @@
 #include "Node.h"
 using namespace std;
 
-Node::Node(int inputValue){
+Node::Node(char inputValue){
 	value = inputValue;
 	right = NULL;
 	left = NULL;
+	next = NULL;
 }
 
 Node::~Node(){}
@@ -27,10 +28,18 @@ void Node::setLeft(Node* input){//sets left value
 	left = input;
 }
 
-int Node::getValue(){//gets current value
+char Node::getValue(){//gets current value
 	return value;
 }
 
-void Node::setValue(int input){//sets current value
+void Node::setValue(char input){//sets current value
 	value = input;
+}
+
+Node* Node::getNext(){
+	return next;
+}
+
+void Node::setNext(Node* input){
+	next = input;
 }

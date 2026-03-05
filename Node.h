@@ -6,16 +6,21 @@ using namespace std;
 //header guard and includes
 class Node{
 	public://public constructor, destructor, and functions
-		Node(int);
+		Node(char);
 		~Node();
 		Node* getRight();
+		void setRight(Node*);
 		Node* getLeft();
-		int getValue();
-		void setValue(int);
+		void setLeft(Node*);
+		char getValue();
+		void setValue(char);
+		Node* getNext();
+		void setNext(Node*);
 	private://private variables
-		int value;
+		char value;
 		Node* right;
 		Node* left;
+		Node* next;
 };
 #endif
 //header guard end
