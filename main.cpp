@@ -34,7 +34,7 @@ struct Queue{
 	void Printqueue(){//prints out the queue
 		Node* current = first;
 		while (current != NULL){
-			cout << current->getValue() << endl;
+			cout << current->getValue();
 			current = current->getNext();
 		}
 		cout << endl;
@@ -58,7 +58,7 @@ struct Stack{
 	Node* Pop(){ //removes back (top)
 		if (first != NULL){
 			Node* prev = first;
-			if (first->getNext(0 != NULL){
+			if (first->getNext() != NULL){
 				Node* current = first->getNext();
 				while (current->getNext() != NULL){
 					prev = current;
@@ -93,12 +93,32 @@ struct Stack{
 	void Printstack(){ //prints out the stack
 		Node* current = first;
 		while (current != NULL){
-			cout << current->getValue() << endl;
+			cout << current->getValue();
 			current = current->getNext();
 		}
 		cout << endl;
 	}
 };
+
+void infixMe(Node* current){
+	Node* left = current->getLeft();
+	Node* right = current->getRight();
+	cout << "(";
+	if (!isdigit(left->getValue())){
+		infixMe(left);
+	}
+	else{
+		cout << left->getValue();
+	}
+	cout << current->getValue();
+	if (!isdigit(right->getValue())){
+		infixMe(right);
+	}
+	else{
+		cout << right->getValue();
+	}
+	cout << ")";
+}
 
 int main(){
 	string expression;
@@ -106,39 +126,71 @@ int main(){
 	cin >> expression;
 	Queue inputExpression;
 	Stack operators;
-	Stack finalExpression;
-	for (int i = 0; i < expression.length(); i++){
+	Queue finalExpression;
+	for (int i = 0; i < expression.length(); i++){//adds expression to inputExpression
 		inputExpression.Enqueue(new Node(expression[i]));
 	}
-	inputExpression.Printqueue();
+	//inputExpression.Printqueue();
+	//shunting yard algorithm
 	for (int i = 0; i < expression.length(); i++){
 		Node* current = inputExpression.Dequeue();//deletes and remembers what was deleted
-		if (isdigit(current->getValue())){
-			finalExpression.Push(current);
+		if (isdigit(current->getValue())){//if current is a number:
+			finalExpression.Enqueue(current);
 		}
-		else{
+		else{//if current is not a number:
 			if (current->getValue() != ')'){
 				operators.Push(current);
 			}
 			else{
-				while (operators.Peek()->getValue() != '('){
+				while (operators.Peek()->getValue() != '(' or current == NULL){
 					Node* currentOp = operators.Pop();
-					finalExpression.Push(currentOp);
+					finalExpression.Enqueue(currentOp);
 				}
 				operators.Pop();
 			}
 		}
 	}
-	cout << "fault here? " << endl;
-	while (operators.Peek() != NULL){
+	//cout << "fault here? " << endl;
+	while (operators.Peek() != NULL){ //pushes remaining operators into final expression
 		Node* currentOp = operators.Pop();
-		finalExpression.Push(currentOp);
+		finalExpression.Enqueue(currentOp);
 	}
 
+	finalExpression.Printqueue();
+	//expression tree algorithm
+	Stack treeNodes;
+	bool atEnd = false;
+	while (!atEnd){//loop through final expression
+		Node* current = finalExpression.Dequeue();
+		if (current != NULL){
+			if (isdigit(current->getValue())){//if current is an operand:
+				treeNodes.Push(current);
+			}
+			else{//if current is an operator:
+				current->setRight(treeNodes.Pop());
+				current->setLeft(treeNodes.Pop());
+				treeNodes.Push(current);
+			}
+		}
+		else{
+			atEnd = true;
+		}
+	}
+	cout << treeNodes.Peek()->getValue() << endl;
+	Node* root = treeNodes.Pop();//root will be the final operator
+	
+	string expressionType;
+	cout << "Print expression in: (prefix, infix, postfix) " << endl;
+	cin >> expressionType; //take in user input for expression type
+	if (expressionType == "prefix"){
+			
+	}
+	else if (expressionType == "infix"){
+		infixMe(root);
+	}
+	else if (expressionType == "postfix"){
 
-	operators.Printstack();
-	finalExpression.Printstack();
-	
-	
+	}
+
 	return 0;
 }
