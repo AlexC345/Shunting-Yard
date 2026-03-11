@@ -100,24 +100,60 @@ struct Stack{
 	}
 };
 
-void infixMe(Node* current){
+void infixMe(Node* current){//recursive infix function
 	Node* left = current->getLeft();
 	Node* right = current->getRight();
-	cout << "(";
-	if (!isdigit(left->getValue())){
-		infixMe(left);
+	cout << "(";//print out parenthesis before and after
+	if (!isdigit(left->getValue())){//if left child is an operator
+		infixMe(left);//recursion on left
 	}
-	else{
-		cout << left->getValue();
+	else{//if left child is number
+		cout << left->getValue();//print it out
 	}
-	cout << current->getValue();
-	if (!isdigit(right->getValue())){
-		infixMe(right);
+	cout << current->getValue();//print out current operator
+	if (!isdigit(right->getValue())){//if right child is an operator
+		infixMe(right);//recursion on right
 	}
-	else{
-		cout << right->getValue();
+	else{//if right child is number
+		cout << right->getValue();//print it out
 	}
-	cout << ")";
+	cout << ")";//print out parenthesis before and after
+}
+
+void prefixMe(Node* current){//recursive prefix function
+	Node* left = current->getLeft();
+	Node* right = current->getRight();
+	cout << current->getValue();//print current value first (number or operator)
+	if (!isdigit(left->getValue())){//if left child is operator
+		prefixMe(left);//recursion on left
+	}
+	else{//if left child is number
+		cout << left->getValue();//print it out
+	}
+	if (!isdigit(right->getValue())){//if right child is operator
+		prefixMe(right);//recursion on right
+	}
+	else{//if right hcild is number
+		cout << right->getValue();//print it out
+	}
+}
+
+void postfixMe(Node* current){//recursive postfix function
+	Node* left = current->getLeft();
+	Node* right = current->getRight();
+	if (!isdigit(left->getValue())){//if left child is operator
+		postfixMe(left);//recursion on left
+	}
+	else{//if left child is number
+		cout << left->getValue();//print it out
+	}
+	if (!isdigit(right->getValue())){//if right child is operator
+		postfixMe(right);//recursion on right
+	}
+	else{//if right child is number
+		cout << right->getValue();//print it out
+	}
+	cout << current->getValue();//print current value last (number or operator)
 }
 
 int main(){
@@ -176,20 +212,27 @@ int main(){
 			atEnd = true;
 		}
 	}
-	cout << treeNodes.Peek()->getValue() << endl;
+	//cout << treeNodes.Peek()->getValue() << endl;
 	Node* root = treeNodes.Pop();//root will be the final operator
 	
 	string expressionType;
-	cout << "Print expression in: (prefix, infix, postfix) " << endl;
-	cin >> expressionType; //take in user input for expression type
-	if (expressionType == "prefix"){
-			
-	}
-	else if (expressionType == "infix"){
-		infixMe(root);
-	}
-	else if (expressionType == "postfix"){
-
+	bool whileBreak = false;
+	while (!whileBreak){
+		cout << "Print expression in: (prefix, infix, postfix, quit) " << endl;
+		cin >> expressionType; //take in user input for expression type
+		if (expressionType == "prefix"){//prefix
+			prefixMe(root);
+		}
+		else if (expressionType == "infix"){//infix
+			infixMe(root);
+		}
+		else if (expressionType == "postfix"){//postfix
+			postfixMe(root);
+		}
+		else if (expressionType == "quit"){
+			whileBreak = true;
+		}
+		cout << endl;
 	}
 
 	return 0;
